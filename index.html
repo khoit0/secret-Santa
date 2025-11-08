@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secret Santa Generator 🎅</title>
+  <title>Secret Santa 🎅</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #fff8f0;
+      color: #333;
       text-align: center;
-      padding: 40px;
+      padding: 50px;
     }
     h1 {
       color: #c0392b;
@@ -53,23 +54,46 @@
 </head>
 <body>
   <h1>🎁 Secret Santa Generator 🎅</h1>
-  <p>Enter all names (one per line):</p>
-  <textarea id="names" placeholder="e.g. Khoi\nAlex\nMaria\nJohn\nEmma"></textarea><br />
-  <button onclick="generateSanta()">Generate!</button>
+  <p>Enter each name on a new line:</p>
+  <textarea id="names" placeholder="Khoi&#10;Alex&#10;Maria&#10;John&#10;Emma"></textarea>
+  <br />
+  <button id="generate">Generate!</button>
 
   <div class="result" id="result"></div>
 
   <script>
-    function generateSanta() {
-      const namesText = document.getElementById('names').value.trim();
-      const resultDiv = document.getElementById('result');
+    document.getElementById("generate").addEventListener("click", function() {
+      const input = document.getElementById("names").value.trim();
+      const resultDiv = document.getElementById("result");
       resultDiv.innerHTML = "";
 
-      if (!namesText) {
-        alert("Please enter at least two names!");
+      if (!input) {
+        alert("Please enter at least two names.");
         return;
       }
 
-      const names = namesText.split(/\n/).map(n => n.trim()).filter(n => n);
+      const names = input.split(/\n/).map(n => n.trim()).filter(Boolean);
       if (names.length < 2) {
-        alert("Need at l
+        alert("Need at least 2 participants!");
+        return;
+      }
+
+      const givers = [...names];
+      let receivers = [...names];
+      let valid = false;
+
+      while (!valid) {
+        receivers.sort(() => Math.random() - 0.5);
+        valid = !givers.some((giver, i) => giver === receivers[i]);
+      }
+
+      let html = "<h3>Assignments:</h3><ul>";
+      for (let i = 0; i < givers.length; i++) {
+        html += `<li>${givers[i]} ➡️ ${receivers[i]}</li>`;
+      }
+      html += "</ul>";
+      resultDiv.innerHTML = html;
+    });
+  </script>
+</body>
+</html>
