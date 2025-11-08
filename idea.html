@@ -21,6 +21,7 @@
       font-size: 16px;
       border: 2px solid #c0392b;
       border-radius: 10px;
+      resize: none;
     }
     button {
       margin-top: 15px;
@@ -44,46 +45,31 @@
       text-align: left;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
   </style>
 </head>
 <body>
   <h1>🎁 Secret Santa Generator 🎅</h1>
-  <p>Enter all names, one per line:</p>
-  <textarea id="names" placeholder="e.g.\nKhoi\nAlex\nMaria\nJohn\nEmma"></textarea>
-  <br />
+  <p>Enter all names (one per line):</p>
+  <textarea id="names" placeholder="e.g. Khoi\nAlex\nMaria\nJohn\nEmma"></textarea><br />
   <button onclick="generateSanta()">Generate!</button>
-  
+
   <div class="result" id="result"></div>
 
   <script>
     function generateSanta() {
       const namesText = document.getElementById('names').value.trim();
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = "";
+
       if (!namesText) {
         alert("Please enter at least two names!");
         return;
       }
 
-      const names = namesText.split(/\s*\n\s*/).filter(n => n);
+      const names = namesText.split(/\n/).map(n => n.trim()).filter(n => n);
       if (names.length < 2) {
-        alert("Need at least 2 participants!");
-        return;
-      }
-
-      let givers = [...names];
-      let receivers = [...names];
-
-      do {
-        receivers.sort(() => Math.random() - 0.5);
-      } while (givers.some((giver, i) => giver === receivers[i]));
-
-      let html = "<h3>Assignments:</h3><ul>";
-      for (let i = 0; i < names.length; i++) {
-        html += `<li>${givers[i]} ➡️ ${receivers[i]}</li>`;
-      }
-      html += "</ul>";
-
-      document.getElementById("result").innerHTML = html;
-    }
-  </script>
-</body>
-</html>
+        alert("Need at l
